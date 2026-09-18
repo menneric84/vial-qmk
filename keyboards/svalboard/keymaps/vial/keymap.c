@@ -38,7 +38,6 @@ enum layer {
     NAVNAS,
     FUNC,
     BOARD_CONFIG = MH_AUTO_BUTTONS_LAYER - 1,
-    MBO = MH_AUTO_BUTTONS_LAYER,
 };
 
 #if __has_include("keymap_all.h")
