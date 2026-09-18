@@ -109,23 +109,6 @@ const uint16_t PROGMEM keymaps[DYNAMIC_KEYMAP_LAYER_COUNT][MATRIX_ROWS][MATRIX_C
         /* RT */  KC_TRNS,            KC_TRNS,            KC_TRNS,            KC_TRNS,            KC_TRNS,            KC_TRNS,
         /* LT */  KC_TRNS,            KC_TRNS,            KC_TRNS,            KC_TRNS,            KC_TRNS,            KC_TRNS
       ),
-
-    /* ===== MBO ===== */
-    [MBO] = LAYOUT(
-        /*      Center           North               East                South                West                Double*/
-        /*R1*/ KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_NO             ,
-        /*R2*/ KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_NO             ,
-        /*R3*/ KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_NO             ,
-        /*R4*/ KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_NO             ,
-        /*L1*/ KC_BTN1           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_NO             ,
-        /*L2*/ KC_BTN3           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_NO             ,
-        /*L3*/ KC_BTN2           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_NO             ,
-        /*L4*/ KC_TRNS           , KC_TRNS           , KC_TRNS           , SV_SNIPER_3       , KC_TRNS           , KC_NO             ,
-        
-        /*     Down               Pad                Up                  Nail                Knuckle             DoubleDown */
-        /*RT*/ KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           , KC_TRNS           ,
-        /*LT*/ KC_TRNS           , KC_BTN1           , KC_TRNS           , KC_BTN2           , KC_TRNS           , KC_TRNS          
-        ),
 };
 #endif
 
@@ -141,4 +124,19 @@ void keyboard_post_init_user(void) {
     sval_init_defaults();
   }
 #endif
+
+  // No automouse layer in this keymap: keep automouse disabled so the
+  // MH_AUTO_BUTTONS_LAYER is never activated by pointer movement.
+  if (global_saved_values.auto_mouse) {
+    global_saved_values.auto_mouse = false;
+    write_eeprom_kb();
+  }
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  // Ignore the automouse toggle so it can't be re-enabled.
+  if (keycode == SV_TOGGLE_AUTOMOUSE) {
+    return false;
+  }
+  return true;
 }
